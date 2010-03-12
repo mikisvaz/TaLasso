@@ -14,4 +14,4 @@ Description goes here.
 
 == Copyright
 
-Copyright (c) 2010 Miguel Vazquez. See LICENSE for details.
+Copyright (c) 2010 Angel Rubio, Ander Muniategui, Miguel Vazquez & Ruben Nogales-Cadenas. See LICENSE for details.

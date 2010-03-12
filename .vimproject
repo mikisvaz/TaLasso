@@ -1,0 +1,39 @@
+TaLasso=/$PWD filter="*.m *.rb *.txt *.rdoc LICENSE" {
+ README.rdoc
+ LICENSE
+ webservice=webservice{
+  TaLassoWS.rb
+  test_TaLassoWS.rb
+ }
+ lib=lib {
+  TaLasso.rb
+ }
+ Matlab=Matlab {
+  GMdataIntersect.m
+  loadExpressionData.m
+  loadPutativeData.m
+  GenMiR=GenMiR {
+   GenMiR.m
+   GenMiR_VBEStep.m
+   GenMiR_VBMStep.m
+   GenMiR_evalE.m
+   evalE.m
+  }
+  SimpleGenMiR=SimpleGenMiR {
+   GenMiRmodified.m
+  }
+  correlation=correlation {
+  }
+  miLasso=miLasso {
+   l1_reg_model.m
+   l1_ls_matlab=l1_ls_matlab {
+    find_lambdamax_l1_ls_nonneg.m
+    l1_ls_nonneg.m
+   }
+  }
+ }
+ test=test {
+  helper.rb
+  test_TaLasso.rb
+ }
+}
