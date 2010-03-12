@@ -1,0 +1,18 @@
+#!/usr/bin/ruby
+$LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
+require 'matrix_format'
+
+file_matrix = ARGV[0]
+file_genes  = ARGV[1]
+file_mirna  = ARGV[2]
+
+list = MatrixFormat.matrix2list(file_matrix, file_genes, file_mirna)
+
+list.each do |gene, list|
+  list.each do |mirna, value|
+    puts [gene, mirna, value] * "\t"
+  end
+end
+
+
+# vim: ft=ruby
