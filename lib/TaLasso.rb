@@ -4,6 +4,8 @@ module TaLasso
   MATLAB_LIB= File.join(File.dirname(File.dirname(File.expand_path(__FILE__))), 'Matlab')
   PUTATIVE_DIR = File.join(File.dirname(File.dirname(File.expand_path(__FILE__))), 'data', 'targets')
 
+  DEBUG=false
+
   def self.matlab_add_paths(lib_paths)
     script =<<-EOF
       addpath('#{MATLAB_LIB}');
@@ -45,14 +47,11 @@ module TaLasso
       fclose(fid);
 
       dlmwrite('#{File.join(output_dir, 'targets.txt')}', full(solucion));
-
-      display("SUCCESS");
     EOF
     script
   end
 
 
-  DEBUG=false
   def self.matlab_run(script)
     pid, iin, iout, ierr = Open4.popen4(MATLAB)
     iin.write script
@@ -125,5 +124,5 @@ end
 if __FILE__ == $0
   endotelio = File.join(File.dirname(File.dirname(File.expand_path(__FILE__))), 'data', 'examples', 'Endotelio')
   outputfile = File.join('/tmp/', 'milasso2')
-  TaLasso.simple_gen_mir(outputfile, endotelio, %w(tarbase))
+  TaLasso.lasso(outputfile, endotelio, %w(tarbase))
 end
