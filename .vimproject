@@ -5,8 +5,13 @@ TaLasso=/$PWD filter="*.m *.rb *.txt *.rdoc LICENSE" {
   TaLassoWS.rb
   test_TaLassoWS.rb
  }
+ bin=bin{
+  matrix2list
+  list2matrix
+ }
  lib=lib {
   TaLasso.rb
+  matrix_format.rb
  }
  Matlab=Matlab {
   GMdataIntersect.m
