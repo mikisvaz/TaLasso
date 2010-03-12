@@ -15,7 +15,7 @@ data_id = server.upload(
 ) 
 
 
-job = server.lasso(data_id, %w(tarbase), '')
+job = server.gen_mir(data_id, %w(tarbase), '')
 
 while ! server.done job
   puts "."

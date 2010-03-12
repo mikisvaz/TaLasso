@@ -28,3 +28,42 @@ task :lasso, %w(data_id putatives), {:putative => :array},
   TaLasso.lasso(output_path, input_path, putatives)
 end
 
+task :correlation, %w(data_id putatives), {:putative => :array}, 
+  ['{JOB}/targets.txt',
+   '{JOB}/gene.txt', 
+   '{JOB}/mirna.txt'] do |data_id, putatives|
+
+  output_path = File.join(workdir, job_name)
+  input_path  = File.join(workdir, data_id)
+
+  step(:process, "Performing Lasso optimization")
+  FileUtils.mkdir_p output_path unless File.exists? output_path
+  TaLasso.correlation(output_path, input_path, putatives)
+end
+
+task :gen_mir, %w(data_id putatives), {:putative => :array}, 
+  ['{JOB}/targets.txt',
+   '{JOB}/gene.txt', 
+   '{JOB}/mirna.txt'] do |data_id, putatives|
+
+  output_path = File.join(workdir, job_name)
+  input_path  = File.join(workdir, data_id)
+
+  step(:process, "Performing Lasso optimization")
+  FileUtils.mkdir_p output_path unless File.exists? output_path
+  TaLasso.gen_mir(output_path, input_path, putatives)
+end
+
+task :simple_gen_mir, %w(data_id putatives), {:putative => :array}, 
+  ['{JOB}/targets.txt',
+   '{JOB}/gene.txt', 
+   '{JOB}/mirna.txt'] do |data_id, putatives|
+
+  output_path = File.join(workdir, job_name)
+  input_path  = File.join(workdir, data_id)
+
+  step(:process, "Performing Lasso optimization")
+  FileUtils.mkdir_p output_path unless File.exists? output_path
+  TaLasso.simple_gen_mir(output_path, input_path, putatives)
+end
+
