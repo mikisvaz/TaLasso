@@ -1,44 +1,46 @@
 function [ solucion ] = l1_reg_model( GE , ME , GM , factor )
 
-  b = GE - median( GE , 2 )*ones( 1 , size(GE,2) );
-  a = ME;
-  
-  solucion = zeros( 1 , size( a , 1 ) );
-  offset = 0;
-  
-  lambda = 2*((b*a').*GM);
-  L = max(lambda');
-  lambda = L*factor;
-  
-  for gene = 1:size(b,1)
+b = GE - median( GE , 2 )*ones( 1 , size(GE,2) );
+a = ME;
 
-      gene
+solucion = zeros( 1 , size( a , 1 ) );
+offset = 0;
 
-      A = a';
-      X = GM';
-      B = b';
-      Y = B;
+lambda = 2*((b*a').*GM);
+L = max(lambda');
+lambda = L*factor;
 
-      %caso general
-      X = X( : , gene );
-      A = A( : , X == 1 );
-      B = B( : , gene );
-      Y = Y( : , gene );
+%for gene = 1:size(I,1)
 
-      A = [ A , 10*ones( size( A , 1 ) , 1 ) ];
+ %   gene = I(gene)
+ 
+ for gene = 1:size(b,1)
+    
+    A = a';
+    X = GM';
+    B = b';
+    Y = B;
 
-      %calcular la norma de las muestras test
-      rel_tol = 0.001;
+    %caso general
+    X = X( : , gene );
+    A = A( : , X == 1 );
+    B = B( : , gene );
+    Y = Y( : , gene );
 
-      [ xi , status ] = l1_ls_nonneg( A , Y , lambda(gene) , rel_tol );     
+    A = [ A , 10*ones( size( A , 1 ) , 1 ) ];
 
-      x = zeros( 1 , size( a , 1 ) );
-      x( 1 , X == 1 ) = xi(1:(size(A,2)-1));
-      solucion = [ solucion ; x ];
-      offset = [ offset , xi(size( A , 2 )) ];
+    %calcular la norma de las muestras test
+    rel_tol = 0.001;
 
-  end
+    [ xi , status ] = l1_ls_nonneg( A , Y , lambda(gene) , rel_tol );     
 
-  solucion = solucion( 2 : end , : );
-  offset = offset( 2 : end );
+    x = zeros( 1 , size( a , 1 ) );
+    x( 1 , X == 1 ) = xi(1:(size(A,2)-1));
+    solucion = [ solucion ; x ];
+    offset = [ offset , xi(size( A , 2 )) ];
+
+end
+
+solucion = solucion( 2 : end , : );
+offset = offset( 2 : end );
 

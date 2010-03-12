@@ -22,58 +22,22 @@
 %
 % /version 3.0, January 2007
 % /author Jim Huang, PSI Group, University of Toronto
+%
+% /In order to be used for this web-page, data loading and displays have been changed, by
+% /Ander Muniategui, Dpto. de Electronica y Comunicaciones, CEIT (Centro de
+% /Estudios e Investigaciones Tecnicas de Guipuzcoa), Universidad de Navarra
 % $Id$
 
-function [Beta Score] = GenMiR(infile, varargin)
+function [Beta Score] = GenMiR(X,Z,C)
 
-if(nargin>1)
-    opts = varargin;
-    if(mod(length(opts),2)==0)
-		opt_param = cell2struct(opts(2:2:end),opts(1:2:end-1),2);
-    else
-        error('Incorrect number of input parameters!');
-    end;
-    
-    if(isfield(opt_param,'num_iter'))
-        num_iter = opt_param.num_iter;
-    else
-        num_iter = 100;
-    end;
-    
-    if(isfield(opt_param,'tol'))
-        tol = opt_param.tol;
-    else
-        tol = 1e-5;        
-    end;
-    
-    if(isfield(opt_param,'filename'))
-        filename = opt_param.filename;
-    else
-        filename = 'GenMiRpred';    
-    end;
-    
-    if(isfield(opt_param,'display'))
-        display = opt_param.display;
-    else
-        display=0;    
-    end
-
-    
-elseif(nargin<1)
-    error('Incorrect number of input parameters!'); 
-else
-    num_iter = 100;
-    tol = 1e-5;
-    filename = 'GenMiRpred';
-    display=0;    
-end;
+num_iter = 100;
+tol = 1e-8;
 
 %Load data;
-load(infile);
-h = waitbar(0,'Loading data...');
-v = get(h, 'Position');
-v(4) = 100;
-set(h, 'Position', v, 'Name', 'GenMiR++');
+N = size( X , 1 );
+M = size( Z , 1 );
+T = size( X , 2 );
+
 
 [row col] = find(C);
 K = length(row);
@@ -82,7 +46,7 @@ K = length(row);
 I = eye(T);
 s = 5e-3;
 mu = mean(X,1);
-alpha = 5e-2;
+alpha = 5e-4;
 Nu = alpha*ones(M,1);
 Pi = 0.5;
 Beta = Pi*C;
@@ -95,6 +59,7 @@ Y0 = (Beta*(Z.*repmat(Nu,1,T)));
 Y = Y0*Omega;
 R = X-repmat(mu,N,1);
 V0 = zeros(T,T);
+
 for kk=1:K
 
 	ii = row(kk);
@@ -103,6 +68,7 @@ for kk=1:K
 	lj = Nu(jj);
 	bij = Beta(ii,jj);
 	V0 = V0 + (lj^2)*(2*bij-bij^2)*diag(zj.^2);	
+    
 end;
 
 U = (1/N)*diag(sum(R.^2 + 2*R.*Y,1));
@@ -114,40 +80,25 @@ Sigma = diag(diag(U+V+W));
 t = 0;
 n_iters = 1;
 
-%Start GenMiR
-waitbar(1,h,'Data loaded. Iterating GenMiR++ algorithm...');
-disp([num2str(nnz(C)) ' predicted miRNA-target interactions involving ' num2str(nnz(sum(C,1))) ' miRNAs and ' num2str(nnz(sum(C,2))) ' target mRNAs']);
-disp('Iterating GenMiR++ algorithm...');
+%Start GenMiR++
 
 tic
 while (dE > tol & t < num_iter)
 		
 	%Variational Bayes E-step: Infer miRNA-target interactions	
-	t=t+1;
- 	waitbar(t/(num_iter),h,{'Variational Bayes E-step'; 'Inferring miRNA-target interactions from data'; ['D(q||p) = ' num2str(E)]; ['\Delta = ' num2str(dE)]});
-	Beta = GenMiR_VBEStep(C, Beta, Pi, Z, X, mu, Nu, Sigma, Omega, Phi, M, N, T);
+	t=t+1
+ 	Beta = GenMiR_VBEStep(C, Beta, Pi, Z, X, mu, Nu, Sigma, Omega, Phi, M, N, T);
 
 	%Variational Bayes M-step
- 	waitbar(t/(num_iter),h,{'Variational Bayes M-step'; 'Marginalizing over parameters'; ['D(q||p) = ' num2str(E)] ; ['\Delta = ' num2str(dE)]});				
-	[Pi Nu alpha Omega Phi mu Sigma U V W] = GenMiR_VBMStep(C, Beta, Pi, Z, X, mu, Nu, alpha, Sigma, Omega, Phi, s, M, N, T, I);
+ 	[Pi Nu alpha Omega Phi mu Sigma U V W] = GenMiR_VBMStep(C, Beta, Pi, Z, X, mu, Nu, alpha, Sigma, Omega, Phi, s, M, N, T, I);
 			
 	%Evaluate bound on likelihood
 	[Eval E dE] = GenMiR_evalE(E,Eval,C, Beta, Pi, Z, X, mu, Nu, alpha, Sigma, Omega, Phi, s, U, V, W, M, N, T, I);
-
-	if(display)
-		plot(Eval, 'LineWidth', 2);
-		xlabel('Number of iterations','FontSize',24); ylabel('L(Q)','FontSize',24); drawnow;
-		handle = gca;
-		set(handle,'FontSize',24);
-		box off;
-	end;
 
 end;
 
 
 %Score miRNA-target interactions
-waitbar(1,h,'Scoring putative interactions...');
-disp('Scoring putative interactions...');
 Score = zeros(nnz(C),1);
 for kk=1:K
 
@@ -156,18 +107,5 @@ for kk=1:K
 	
 	bij = Beta(ii,jj);
 	Score(kk) = log10((bij+eps)/(1-bij+eps));
+    
 end;
-
-waitbar(1,h,['Algorithm terminated in ' num2str(t-1) ' iterations.']);
-disp(['Algorithm terminated in ' num2str(t-1) ' iterations.']);
-toc
-
-waitbar(1,h,['Saving model to ' [filename '.mat'] '.']);
-disp(['Saving model to ' [filename '.mat'] '.']);
-save([filename '.mat'],'X','Z','C','Beta','Nu','Omega','Phi','mu','Sigma','Pi','Eval','Score');
-
-set(h, 'Name', 'GenMiR++ - Done. Press any key to exit.')
-waitbar(1,h,'Press any key to exit.');
-disp('Press any key to exit.');
-%pause
-close(h);

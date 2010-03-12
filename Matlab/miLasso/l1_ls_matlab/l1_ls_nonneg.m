@@ -90,7 +90,7 @@ elseif (nargin >= 3)
     lambda = varargin{2};
     varargin = varargin(3:end);
 else
-    if (~quiet) disp('Insufficient input arguments'); end
+    %if (~quiet) disp('Insufficient input arguments'); end
     x = []; status = 'Failed'; history = [];
     return;
 end
@@ -114,11 +114,11 @@ normg   = 0; prelres = 0; dx =  zeros(n,1);
 % diagxtx = diag(At*A);
 diagxtx = 2*ones(n,1);
 
-if (~quiet) disp(sprintf('\nSolving a problem of size (m=%d, n=%d), with lambda=%.5e',...
-            m,n,lambda)); end
-if (~quiet) disp('-----------------------------------------------------------------------------');end
-if (~quiet) disp(sprintf('%5s %9s %15s %15s %13s %11s',...
-            'iter','gap','primobj','dualobj','step len','pcg iters')); end
+% if (~quiet) disp(sprintf('\nSolving a problem of size (m=%d, n=%d), with lambda=%.5e',...
+%             m,n,lambda)); end
+% if (~quiet) disp('-----------------------------------------------------------------------------');end
+% if (~quiet) disp(sprintf('%5s %9s %15s %15s %13s %11s',...
+%             'iter','gap','primobj','dualobj','step len','pcg iters')); end
 
 %------------------------------------------------------------
 %               MAIN LOOP
@@ -148,13 +148,13 @@ for ntiter = 0:MAX_NT_ITER
     %------------------------------------------------------------
     %   STOPPING CRITERION
     %------------------------------------------------------------
-    if (~quiet) disp(sprintf('%4d %12.2e %15.5e %15.5e %11.1e %8d',...
-        ntiter, gap, pobj, dobj, s, pitr)); end
+    %if (~quiet) disp(sprintf('%4d %12.2e %15.5e %15.5e %11.1e %8d',...
+     %   ntiter, gap, pobj, dobj, s, pitr)); end
 
     if (gap/abs(dobj) < reltol) 
         status  = 'Solved';
         history = [pobjs-dobjs; pobjs; dobjs; sts; pitrs; pflgs];
-        if (~quiet) disp('Absolute tolerance reached.'); end
+        %if (~quiet) disp('Absolute tolerance reached.'); end
         %disp(sprintf('total pcg iters = %d\n',sum(pitrs)));
         return;
     end
@@ -221,11 +221,11 @@ end
 %------------------------------------------------------------
 if (lsiter == MAX_LS_ITER)
     % failed in backtracking linesearch.
-    if (~quiet) disp('MAX_LS_ITER exceeded in BLS'); end
+    %if (~quiet) disp('MAX_LS_ITER exceeded in BLS'); end
     status = 'Failed';
 elseif (ntiter == MAX_NT_ITER)
     % fail to find the solution within MAX_NT_ITER
-    if (~quiet) disp('MAX_NT_ITER exceeded.'); end
+    %if (~quiet) disp('MAX_NT_ITER exceeded.'); end
     status = 'Failed';
 end
 history = [pobjs-dobjs; pobjs; dobjs; sts; pitrs; pflgs];

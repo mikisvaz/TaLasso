@@ -20,7 +20,7 @@ for jj=1:M
 	bj = 1/alpha + (zj'*(Sigma\Omega)*R' + 0.5*Ej'*Yj')*Bj;
 	cj = -1;
 
-	Nu(jj) = max([(-bj + sqrt(bj^2-4*aj*cj))./(2*aj) (-bj - sqrt(bj^2-4*aj*cj))./(2*aj)]);
+	Nu(jj) = max([2*cj/(-bj + sqrt(bj^2-4*aj*cj)) 2*cj/(-bj - sqrt(bj^2-4*aj*cj))]);
 	V0 = V0 + (Nu(jj)^2)*diag(sum(2*Bj-Bj.^2).*(zj.^2));
 end;
 

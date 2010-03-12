@@ -1,4 +1,4 @@
-function [ Beta , Beta_sorted , sorted ] = GenMiRmodified( C , X , Z , gene , mirna )
+function [ Beta ] = GenMiRmodified(X , Z , C )
 
 % X = gene expression
 % Z = mirna expression
@@ -13,9 +13,3 @@ r = (1/N)*(sum(X.^2,1))';
 Xn = X./(r*ones(1,N))';  
 
 Beta = -alpha*(Xn*Z').*C+0.5*C;
-
-[ I , J ] = find( Beta > 0 );
-B = Beta( Beta > 0 );
-[ Beta_sorted , i ] = sort( -B );
-Beta_sorted = - Beta_sorted;
-sorted = [ gene( I ( i ) ) , mirna( J ( i ) ) ];
