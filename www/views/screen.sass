@@ -1,0 +1,456 @@
+*
+  margin: 0
+  padding: 0
+
+
+body, div, span, p, a, img, ul, ol, li, table, th, tr, td, form, fieldset, legend, dl, dt, dd, blockquote, applet, object
+  border: 0
+
+
+body
+  padding: 0 0 18px 0
+  background: #fff url('../img/bg.jpg') repeat-x
+  font: 0.8em/1.5 "arial",sans-serif
+  color: #333
+  text-align: center
+
+
+a
+  color: #095799
+
+  &:link
+    color: #095799
+
+  &:hover
+    color: #095799
+    text-decoration: none
+
+
+h1, h2, h3, h4, h5, h6
+  margin: 15px 0 10px 0
+
+
+h1
+  font-size: 200%
+
+  &#logo
+    font-size: 280%
+    font-weight: normal
+
+
+h2
+  font-size: 190%
+  font-weight: normal
+  line-height: 24px
+
+
+h3
+  font-size: 100%
+  margin-top: 20px
+  border-bottom: 1px solid #dfdfdf
+  padding-bottom: 5px
+  ;margin-right: 15px
+
+
+#panel-left h3
+  margin-top: 15px
+  padding-bottom: 0
+  font-size: 160%
+  font-weight: normal
+  border: none
+
+
+h4
+  font-size: 120%
+
+
+h5
+  font-size: 100%
+
+
+#layout
+  width: 800px
+  margin: 0 auto
+  text-align: left
+
+
+#container
+  background: #fff
+
+
+#obsah
+
+#header
+  position: relative
+  background: #2a9ac3 url('../img/header.jpg') no-repeat
+
+
+#logo
+  font-family: 'Trebuchet MS', 'Geneva CE', lucida, sans-serif
+  position: relative
+  overflow: hidden
+  height: 132px
+  font-size: 260%
+  margin: 0
+  line-height: 120px
+  text-align: left
+
+  a
+    display: block
+    color: #fff
+    text-decoration: none
+
+  span
+    display: block
+    position: absolute
+    left: 0
+    top: 0
+    z-index: 1
+    width: 250px
+    height: 120px
+    background: url("../img/logo.jpg") 0 0 no-repeat
+    cursor: pointer
+
+
+#slogan
+  position: absolute
+  left: 270px
+  line-height: 120px
+  display: block
+  height: 120px
+  top: 0
+
+
+#nav
+  position: relative
+  z-index: 2
+  border-top: 0
+
+  ul
+    margin: 0
+    padding: 0
+    list-style: none
+
+    li
+      float: left
+      _float: none
+      display: inline
+      margin: 0
+      padding: 0
+      background: url('../img/nav.jpg') no-repeat
+
+      a
+        font-family: 'Trebuchet MS', 'Geneva CE', lucida, sans-serif
+        color: #fff
+        font-size: 95%
+        font-weight: bold
+        display: block
+        float: left
+        float: none
+        padding: 16px 22px
+        text-align: center
+
+        &:hover
+          text-decoration: none
+
+
+#first
+  background: none !important
+
+
+.content
+  float: right
+  padding: 0 0 0 0px
+  margin-top: 15px
+  width: 800px
+  z-index: 10
+
+  .in
+    padding: 8px 18px 0 22px
+    border-left: 1px solid #e3e3e3
+
+
+#panel-left
+  float: left
+  width: 170px
+
+
+.panel .in
+  padding: 0px 5px 10px 20px
+
+
+#footer
+  clear: both
+  height: 27px
+  background: url('../img/footer.jpg') no-repeat
+  padding: 17px 16px 13px 16px
+  color: #676767
+  margin-top: 10px
+
+  p
+    margin: 0
+    padding-top: 10px
+
+
+p
+  margin: 15px 0
+  line-height: 25px
+  font-size: 12px
+
+
+table
+  margin: 15px 0
+  border: 1px solid #cdcdcd
+  border-collapse: collapse
+  border-spacing: 0
+  font-size: 100%
+  width: 100%
+
+
+th
+  text-align: center
+  font-weight: bold
+  border: 1px solid #cdcdcd
+  padding: 4px 6px
+  border: 1px solid #cdcdcd
+
+
+td
+  padding: 4px 6px
+  border: 1px solid #cdcdcd
+
+
+tr.table-top
+  background: #e5e5e5
+  font-weight: bold
+
+
+ul, ol
+  display: block
+  margin: 15px 0 15px 40px
+
+
+ul ul
+  margin: 0
+  margin-left: 20px
+
+  ul
+    margin: 0
+    margin-left: 20px
+
+
+ol
+  list-style-type: decimal
+
+  ol
+    margin: 0
+    margin-left: 20px
+    list-style-type: upper-alpha
+
+    ol
+      margin: 0
+      margin-left: 20px
+      list-style-type: lower-alpha
+
+
+li
+  display: list-item
+  margin-bottom: 6px
+
+
+ul li a
+  text-decoration: underline
+
+
+#panel-left
+  ul
+    margin: 0 !important
+    padding: 0 !important
+    list-style-type: none
+    font-size: 95%
+
+  li
+    list-style-type: none
+    background: url('../img/li.jpg') no-repeat  3px 6px
+    padding-left: 20px
+    margin-bottom: 6px
+
+
+dl
+  margin: 15px 0
+
+
+dt
+  font-weight: bold
+
+
+dd
+  margin-left: 30px
+
+
+fieldset
+  margin: 15px 0
+  padding: 10px
+  border: 1px solid #CCC
+
+
+legend
+  margin-left: 10px
+  font-size: 100%
+  font-weight: bold
+  color: #000
+
+
+abbr, acronym, .help
+  border-bottom: 1px dotted #CCC
+  cursor: help
+
+
+blockquote
+  margin: 15px 20px
+  font-style: italic
+
+
+del, .del
+  text-decoration: line-through
+
+
+strong, .strong
+  font-weight: bold
+
+
+cite, em, q, var
+  font-style: italic
+
+
+code, kbd, samp
+  font-family: monospace
+  font-size: 110%
+
+
+hr
+  display: block
+  height: 1px
+  margin: 10px 0
+  padding: 0
+  border: 0 solid #CCC
+  background: #CCC
+  color: #CCC
+
+
+.f-left
+  float: left
+
+
+.f-right
+  float: right
+
+
+.a-left, tr.a-left td
+  text-align: left
+
+
+.a-center, tr.a-center td
+  text-align: center
+
+
+.a-right, tr.a-right td
+  text-align: right
+
+
+.a-justify
+  text-align: justify
+
+
+.va-top
+  vertical-align: top
+
+
+.va-middle
+  vertical-align: middle
+
+
+.va-bottom
+  vertical-align: bottom
+
+
+.clear
+  clear: both
+
+
+.box
+  min-height: 1px
+
+  &:after
+    display: block
+    visibility: hidden
+    clear: both
+    line-height: 0
+    font-size: 0
+    content: "."
+
+
+.noscreen
+  display: none
+
+
+.mleft10
+  margin-left: 10px
+
+
+.mright10
+  margin-right: 10px
+
+
+.mtop10
+  margin-top: 10px
+
+
+.mbottom10
+  margin-bottom: 10px
+
+
+.mtop0
+  margin-top: 0
+
+
+a
+  img
+    border: 1px solid #dadada
+
+  &:hover img
+    border: 1px solid #bbbbbb
+
+
+.thumbnail
+  float: left
+  margin: 0 14px 5px 0
+
+
+input
+  &.small
+    width: 50px
+
+  &.normal
+    width: 146px
+
+
+.bigger
+  font-size: 115%
+
+
+.smaller
+  font-size: 85%
+
+
+.high
+  color: #00F
+
+
+.nonhigh
+  color: #777
+
+
+.foto
+  display: block
+  border: 3px solid #ddd
