@@ -1,18 +1,17 @@
 TaLasso=/$PWD filter="*.m *.rb *.txt *.rdoc LICENSE ToDo" {
  README.rdoc
  LICENSE
+ ToDo
  webservice=webservice{
   TaLassoWS.rb
   test_TaLassoWS.rb
  }
  bin=bin{
-  matrix2list
-  list2matrix
  }
  lib=lib {
   TaLasso.rb
-  validation.rb
   matrix_format.rb
+  validation.rb
  }
  Matlab=Matlab {
   GMdataIntersect.m
@@ -41,5 +40,10 @@ TaLasso=/$PWD filter="*.m *.rb *.txt *.rdoc LICENSE ToDo" {
  test=test {
   helper.rb
   test_TaLasso.rb
+ }
+ www=www{
+  talasso_sinatra.rb
+  views=views filter='*.haml *.sass'{
+   }
  }
 }
