@@ -15,7 +15,7 @@ serve :upload, %w(geneExpression mirnaExpression genes mirna samples) do |ge, me
   name
 end
 
-task :lasso, %w(data_id putatives), {:putative => :array}, 
+task :lasso, %w(data_id putatives), {:putatives => :array}, 
   ['{JOB}/targets.txt',
    '{JOB}/gene.txt', 
    '{JOB}/mirna.txt'] do |data_id, putatives|
@@ -28,7 +28,7 @@ task :lasso, %w(data_id putatives), {:putative => :array},
   TaLasso.lasso(output_path, input_path, putatives)
 end
 
-task :correlation, %w(data_id putatives), {:putative => :array}, 
+task :correlation, %w(data_id putatives), {:putatives => :array}, 
   ['{JOB}/targets.txt',
    '{JOB}/gene.txt', 
    '{JOB}/mirna.txt'] do |data_id, putatives|
@@ -41,7 +41,7 @@ task :correlation, %w(data_id putatives), {:putative => :array},
   TaLasso.correlation(output_path, input_path, putatives)
 end
 
-task :gen_mir, %w(data_id putatives), {:putative => :array}, 
+task :gen_mir, %w(data_id putatives), {:putatives => :array}, 
   ['{JOB}/targets.txt',
    '{JOB}/gene.txt', 
    '{JOB}/mirna.txt'] do |data_id, putatives|
@@ -54,7 +54,7 @@ task :gen_mir, %w(data_id putatives), {:putative => :array},
   TaLasso.gen_mir(output_path, input_path, putatives)
 end
 
-task :simple_gen_mir, %w(data_id putatives), {:putative => :array}, 
+task :simple_gen_mir, %w(data_id putatives), {:putatives => :array}, 
   ['{JOB}/targets.txt',
    '{JOB}/gene.txt', 
    '{JOB}/mirna.txt'] do |data_id, putatives|
