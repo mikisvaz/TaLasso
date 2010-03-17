@@ -20,8 +20,7 @@ end
 
 get '/aplication.css' do
   headers 'Content-Type' => 'text/css'
-  sass :msie
-  sass :screen
+  sass :screen  
 end
 
 get '/wsdl' do
@@ -103,9 +102,9 @@ get '/:job' do
     # Change this part and the results view to present
     # your results.
     @results = $driver.results(@job)
-    File.open(File.join(RESULTS_DIR,"#{@job}_targets.txt"), 'w') do |f| f.write Base64.decode64 $driver.result(@results[0]) end
-    File.open(File.join(RESULTS_DIR,"#{@job}_gene.txt"), 'w') do |f| f.write Base64.decode64 $driver.result(@results[1]) end
-    File.open(File.join(RESULTS_DIR,"#{@job}_mirna.txt"), 'w') do |f| f.write Base64.decode64 $driver.result(@results[2]) end
+    File.open(File.join(RESULTS_DIR,"#{@job}_targets.txt"), 'w') do |f| f.write Base64.decode64 $driver.result(@results[0]) end unless File.exists? File.join(RESULTS_DIR,"#{@job}_targets.txt")
+    File.open(File.join(RESULTS_DIR,"#{@job}_gene.txt"), 'w') do |f| f.write Base64.decode64 $driver.result(@results[1]) end unless File.exists? File.join(RESULTS_DIR,"#{@job}_gene.txt")
+    File.open(File.join(RESULTS_DIR,"#{@job}_mirna.txt"), 'w') do |f| f.write Base64.decode64 $driver.result(@results[2]) end unless File.join(RESULTS_DIR,"#{@job}_mirna.txt")
 
     @info = $driver.info(@job)
     @title += " [Done]"
@@ -137,10 +136,4 @@ get '/:job/g/:gen' do
   @gene_targets = sorted_targets.select{|p| p[:gen] == @gen}
 
   haml :gene_results
-
 end
-
-
-__END__
-
-

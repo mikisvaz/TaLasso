@@ -43,7 +43,18 @@ TaLasso=/$PWD filter="*.m *.rb *.txt *.rdoc LICENSE ToDo" {
  }
  www=www{
   talasso_sinatra.rb
-  views=views filter='*.haml *.sass'{
-   }
+  views=views filter="*.haml *.sass"{
+   documentation.haml
+   error.haml
+   gene_results.haml
+   help.haml
+   index.haml
+   layout.haml
+   mirna_results.haml
+   prueba.haml
+   results.haml
+   wait.haml
+   screen.sass
+  }
  }
 }
