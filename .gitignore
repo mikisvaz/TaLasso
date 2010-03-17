@@ -22,3 +22,4 @@ pkg
 ._*.m
 data/examples
 webservice/wsdl
+www/public/results
