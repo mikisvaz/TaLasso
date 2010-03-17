@@ -1,0 +1,21 @@
+%h1== Results for #{@job}
+%p
+  Download results files
+%ul
+  %li
+    %a{:href => "/results/#{@job}_targets.txt"} Targets
+  %li
+    %a{:href => "/results/#{@job}_gene.txt"} Genes 
+  %li
+    %a{:href => "/results/#{@job}_mirna.txt"} MiRNAs
+%table
+  %th Gene
+  %th miRNA
+  %th Score
+  - @sorted_targets.each do |p|
+    %tr
+      %td
+        %a{:href => "#{@job}/g/#{p[:gen]}"}=p[:gen]
+      %td
+        %a{:href => "#{@job}/m/#{p[:mirna]}"}=p[:mirna]
+      %td=p[:score]

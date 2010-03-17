@@ -1,0 +1,33 @@
+%form(action = '/' method = 'post' enctype = 'multipart/form-data')
+  %h3 
+    1. Gene Expression matrix
+  %input{:type=>"file",:name=>"GE"}
+  %h3
+    2. MiRNAs Expression matrix
+  %input{:type=>"file",:name=>"ME"}
+  %h3  
+    3. Genes names
+  %input{:type=>"file",:name=>"genes"}
+  %h3      
+    4. MiRNAs names
+  %input{:type=>"file",:name=>"mirnas"}
+  %h3
+    5. Samples names
+  %input{:type=>"file",:name=>"samples"}
+  %h3
+    6. Gene - MiRNAs putative targets
+  %select{:id => "putative", :name => "putative", :size => 14, :multiple => "yes"}
+    - %w(microrna mirbase mirecords tarbase hoctar).each do |p|
+      %option{:name => p, :value => p}=p
+    - %w(DIANAmicroT  I_mirandaXL_pictar4way_targetscans  I_pictar4way_targetscans  Union  microrna  mirbase  pictar4way  pictar5way  targetscans).each do |p|
+      %option{:name => "mirgen/#{p}", :value => "mirgen/#{p}"}="mirgen:#{p}"   
+  %h3
+    7. Algorithm
+  %select{:id => "algorithm", :name => "algorithm"}
+    - %w(TaLasso Correlation GenMir SimpleGenMir).each do |p|
+      %option{:name => p, :value => p}=p
+  %h3 8. Name your job (optional)
+  %input(name='name')
+  %p
+  %input(type='submit')
+

@@ -1,0 +1,9 @@
+%head
+  %meta{ 'http-equiv' => 'refresh', :content => "5" }
+  %center  
+    %h1== Status: #{@status}
+    %ul
+      - @messages.each do |msg|
+        %li= msg
+    %img{:src => "../images/loading.gif"}
+

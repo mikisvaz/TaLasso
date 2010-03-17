@@ -1,0 +1,9 @@
+%h1== Results for #{@gen} in #{@job}
+%table
+  %th Mirna
+  %th Score
+  - @gene_targets.each do |p|
+    %tr
+      %td
+        %a{ :href => "/#{@job}/m/#{p[:mirna]}" }=p[:mirna]
+      %td=p[:score]
