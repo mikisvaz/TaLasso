@@ -1,4 +1,4 @@
-TaLasso=/$PWD filter="*.m *.rb *.txt *.rdoc LICENSE" {
+TaLasso=/$PWD filter="*.m *.rb *.txt *.rdoc LICENSE ToDo" {
  README.rdoc
  LICENSE
  webservice=webservice{
@@ -11,6 +11,7 @@ TaLasso=/$PWD filter="*.m *.rb *.txt *.rdoc LICENSE" {
  }
  lib=lib {
   TaLasso.rb
+  validation.rb
   matrix_format.rb
  }
  Matlab=Matlab {
