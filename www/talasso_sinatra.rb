@@ -59,19 +59,20 @@ post '/' do
 
   putatives << params[:putative]
   
-  job = case params[:algorithm]
-    when "TaLasso" then $driver.lasso(data_id, putatives, '')
-    when "Correlation" then $driver.correlation(data_id, putatives, '')
-    when "GenMir" then $driver.gen_mir(data_id, putatives, '')
-    when "SimpleGenMir" then $driver.simple_gen_mir(data_id, putatives, '')
-  end
-
   if name.nil? || name.empty?
     filename = params[:GE][:filename]
     name = File.basename(filename).sub(/\.[^\.]*$/,'')
   else
     name = name.gsub(/\s+/,"_")
   end
+
+  job = case params[:algorithm]
+    when "TaLasso" then $driver.lasso(data_id, putatives, name)
+    when "Correlation" then $driver.correlation(data_id, putatives, name)
+    when "GenMir" then $driver.gen_mir(data_id, putatives, name)
+    when "SimpleGenMir" then $driver.simple_gen_mir(data_id, putatives, name)
+  end
+
 
   # Change this information to match you actual web serice
   redirect "/" + job
