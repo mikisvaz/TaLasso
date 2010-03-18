@@ -43,6 +43,9 @@ TaLasso=/$PWD filter="*.m *.rb *.txt *.rdoc LICENSE ToDo" {
  }
  www=www{
   talasso_sinatra.rb
+  lib=lib{
+   cache.rb
+  }
   views=views filter="*.haml *.sass"{
    documentation.haml
    error.haml

@@ -1,8 +1,5 @@
-require 'yaml'
-require 'base64'
-
 module CacheHelper
-  CACHE_DIR = File.join(MARQ.workdir, 'tmp','cache')
+  CACHE_DIR = File.join(File.dirname(File.expand_path(__FILE__)), '..', 'cache')
   FileUtils.mkdir_p(CACHE_DIR) unless File.exist?(CACHE_DIR)
  
   class CacheLocked < Exception; end
@@ -13,6 +10,7 @@ module CacheHelper
   def self.reset_locks
     FileUtils.rm Dir.glob(CACHE_DIR + '*.lock')
   end
+ 
  
   def self.build_filename(name, key)
     File.join(CACHE_DIR, name + ": " + Digest::MD5.hexdigest(key.to_s))
@@ -72,6 +70,4 @@ module CacheHelper
       Marshal::dump(yield)
     end)
   end
- 
- 
 end

@@ -1,3 +1,4 @@
+$LOAD_PATH.unshift(File.dirname(__FILE__))
 require 'rubygems'
 require 'sinatra'
 require 'matrix_format'
@@ -8,6 +9,9 @@ require 'base64'
 require 'yaml'
 require 'paginator'
 require 'soap/wsdlDriver'
+require 'lib/cache.rb'
+
+include CacheHelper
 
 RESULTS_DIR = File.join(File.dirname(File.expand_path(__FILE__)), 'public', 'results')
 FileUtils.mkdir_p RESULTS_DIR unless File.exists? RESULTS_DIR
@@ -38,8 +42,10 @@ get '/documentation' do
 end
 
 get '/' do
-  @title ="Home"
-  haml :index
+  cache('home') do
+    @title ="Home"
+    haml :index
+  end
 end
 
 post '/' do
@@ -74,8 +80,8 @@ post '/' do
 
   puts data_id
   putatives.each{|p|
-	puts p
-   }
+    puts p
+  }
 
 
   job = case params[:algorithm]
@@ -90,12 +96,15 @@ post '/' do
 end
 
 get '/help' do
-  haml :help
+  cache('help') do
+    haml :help
+  end
 end
 
 
 get '/:job' do
   @job   = params[:job]
+  page   = params[:page]
   @title = @job
 
   case 
@@ -111,23 +120,29 @@ get '/:job' do
     haml :wait
 
   else
-    @results = $driver.results(@job)
-    File.open(File.join(RESULTS_DIR,"#{@job}_targets.txt"), 'w') do |f| f.write Base64.decode64 $driver.result(@results[0]) end unless File.exists? File.join(RESULTS_DIR,"#{@job}_targets.txt")
-    File.open(File.join(RESULTS_DIR,"#{@job}_gene.txt"), 'w') do |f| f.write Base64.decode64 $driver.result(@results[1]) end    unless File.exists? File.join(RESULTS_DIR,"#{@job}_gene.txt")
-    File.open(File.join(RESULTS_DIR,"#{@job}_mirna.txt"), 'w') do |f| f.write Base64.decode64 $driver.result(@results[2]) end   unless File.exists? File.join(RESULTS_DIR,"#{@job}_mirna.txt")
+    cache('job', [@job, page]) do 
+      @results = $driver.results(@job)
+      File.open(File.join(RESULTS_DIR,"#{@job}_targets.txt"), 'w') do |f| f.write Base64.decode64 $driver.result(@results[0]) end unless File.exists? File.join(RESULTS_DIR,"#{@job}_targets.txt")
+      File.open(File.join(RESULTS_DIR,"#{@job}_gene.txt"), 'w') do |f| f.write Base64.decode64 $driver.result(@results[1]) end    unless File.exists? File.join(RESULTS_DIR,"#{@job}_gene.txt")
+      File.open(File.join(RESULTS_DIR,"#{@job}_mirna.txt"), 'w') do |f| f.write Base64.decode64 $driver.result(@results[2]) end   unless File.exists? File.join(RESULTS_DIR,"#{@job}_mirna.txt")
 
-    @info = $driver.info(@job)
-    @title += " [Done]"
-    
-	#def marshal_cache(name, key = [])
+      @info = $driver.info(@job)
+      @title += " [Done]"
 
-    targets = MatrixFormat::matrix2list( File.join(RESULTS_DIR,"#{@job}_targets.txt"), File.join(RESULTS_DIR,"#{@job}_gene.txt"), File.join(RESULTS_DIR,"#{@job}_mirna.txt"))
-    sorted_targets = targets.collect{|gen,info| info.collect{|mirna,score| {:gen => gen, :mirna => mirna, :score => score.to_f}}}.flatten.sort_by{|p| p[:score]}.reverse
-    @pager = Paginator.new(sorted_targets.size, 50) do |offset, per_page|
-    	sorted_targets[offset, per_page]
+
+
+      sorted_targets = marshal_cache('sorted_targets', [@job]) do
+        targets = MatrixFormat::matrix2list( File.join(RESULTS_DIR,"#{@job}_targets.txt"), File.join(RESULTS_DIR,"#{@job}_gene.txt"), File.join(RESULTS_DIR,"#{@job}_mirna.txt"))
+        targets.collect{|gen,info| info.collect{|mirna,score| {:gen => gen, :mirna => mirna, :score => score.to_f}}}.flatten.sort_by{|p| p[:score]}.reverse
+      end
+
+      @pager = Paginator.new(sorted_targets.size, 50) do |offset, per_page|
+        sorted_targets[offset, per_page]
+      end
+      @page = @pager.page(page)
+
+      haml :results
     end
-    @page = @pager.page(params[:page])
-    haml :results
   end
 
 end
@@ -137,8 +152,11 @@ get '/:job/m/:mirna' do
   @title = @job
   @mirna = params[:mirna]
 
-  targets = MatrixFormat::matrix2list( File.join(RESULTS_DIR,"#{@job}_targets.txt"), File.join(RESULTS_DIR,"#{@job}_gene.txt"), File.join(RESULTS_DIR,"#{@job}_mirna.txt"))
-  sorted_targets = targets.collect{|gen,info| info.collect{|mirna,score| {:gen => gen, :mirna => mirna, :score => score.to_f}}}.flatten.sort_by{|p| p[:score]}.reverse
+  sorted_targets = marshal_cache('sorted_targets', [@job]) do
+    targets = MatrixFormat::matrix2list( File.join(RESULTS_DIR,"#{@job}_targets.txt"), File.join(RESULTS_DIR,"#{@job}_gene.txt"), File.join(RESULTS_DIR,"#{@job}_mirna.txt"))
+    targets.collect{|gen,info| info.collect{|mirna,score| {:gen => gen, :mirna => mirna, :score => score.to_f}}}.flatten.sort_by{|p| p[:score]}.reverse
+  end
+
   @mirna_targets = sorted_targets.select{|p| p[:mirna] == @mirna}
 
   haml :mirna_results
