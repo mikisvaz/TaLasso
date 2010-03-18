@@ -3,7 +3,7 @@ require 'soap/wsdlDriver'
 require 'base64'
 
 WSDL_URI  = File.join(File.dirname(File.expand_path(__FILE__)), 'wsdl', 'TaLassoWS.wsdl')
-DATA_PATH = File.join(File.dirname(File.expand_path(__FILE__)), '../data/examples/Endotelio')
+DATA_PATH = File.join(File.dirname(File.expand_path(__FILE__)), '../tmp/data-iV9UQK9Se05AfHd5A62C/')
 server =  SOAP::WSDLDriverFactory.new(WSDL_URI).create_rpc_driver 
 
 data_id = server.upload(
@@ -15,7 +15,7 @@ data_id = server.upload(
 ) 
 
 
-job = server.gen_mir(data_id, %w(tarbase), '')
+job = server.gen_mir(data_id,  %w(tarbase mirbase), '')
 
 while ! server.done job
   puts "."

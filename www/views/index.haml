@@ -16,11 +16,18 @@
   %input{:type=>"file",:name=>"samples"}
   %h3
     6. Gene - MiRNAs putative targets
-  %select{:id => "putative", :name => "putative", :size => 14, :multiple => "yes"}
-    - %w(microrna mirbase mirecords tarbase hoctar).each do |p|
-      %option{:name => p, :value => p}=p
+  #rightside
+    %input{:type=>"checkbox", :name=>"microrna", :value => 1, :checked => true} microrna
+    %br
+    - %w(mirbase mirecords tarbase hoctar).each do |p|
+      %input{:type=>"checkbox", :name=>"#{p}", :value => 1, :checked => false}
+        =p
+      %br
+  #leftside
     - %w(DIANAmicroT  I_mirandaXL_pictar4way_targetscans  I_pictar4way_targetscans  Union  microrna  mirbase  pictar4way  pictar5way  targetscans).each do |p|
-      %option{:name => "mirgen/#{p}", :value => "mirgen/#{p}"}="mirgen:#{p}"   
+      %input{:type=>"checkbox", :name=>"mirgen_#{p}", :value => 1, :checked => false}
+        mirgen: #{p}
+        %br
   %h3
     7. Algorithm
   %select{:id => "algorithm", :name => "algorithm"}

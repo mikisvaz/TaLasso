@@ -9,7 +9,6 @@ body, div, span, p, a, img, ul, ol, li, table, th, tr, td, form, fieldset, legen
 
 body
   padding: 0 0 18px 0
-  background: #fff url('../img/bg.jpg') repeat-x
   font: 0.8em/1.5 "arial",sans-serif
   color: #333
   text-align: center
@@ -25,6 +24,11 @@ a
     color: #095799
     text-decoration: none
 
+  .separated
+    margin-left: 10px
+    margin-right: 10px
+    color: red
+  
 
 h1, h2, h3, h4, h5, h6
   margin: 15px 0 10px 0
@@ -82,8 +86,19 @@ h5
 
 #header
   position: relative
-  background: #2a9ac3 url('../img/header.jpg') no-repeat
+  background: #2a9ac3 
 
+
+#rightside
+  float: left
+  padding-left: 150px
+  width: 250px
+  height: 170px
+  
+#leftside
+  float: right
+  width: 400px
+  height: 170px
 
 #logo
   font-family: 'Trebuchet MS', 'Geneva CE', lucida, sans-serif
@@ -108,7 +123,6 @@ h5
     z-index: 1
     width: 250px
     height: 120px
-    background: url("../img/logo.jpg") 0 0 no-repeat
     cursor: pointer
 
 
@@ -137,7 +151,6 @@ h5
       display: inline
       margin: 0
       padding: 0
-      background: url('../img/nav.jpg') no-repeat
 
       a
         font-family: 'Trebuchet MS', 'Geneva CE', lucida, sans-serif
@@ -182,7 +195,6 @@ h5
 #footer
   clear: both
   height: 27px
-  background: url('../img/footer.jpg') no-repeat
   padding: 17px 16px 13px 16px
   color: #676767
   margin-top: 10px
@@ -271,7 +283,6 @@ ul li a
 
   li
     list-style-type: none
-    background: url('../img/li.jpg') no-repeat  3px 6px
     padding-left: 20px
     margin-bottom: 6px
 
@@ -426,6 +437,17 @@ a
   float: left
   margin: 0 14px 5px 0
 
+.separated
+  margin-left: 20px
+  margin-right: 20px
+
+.first
+  margin: 0
+  padding-right: 200px
+
+.last
+  margin: 0
+  padding-left: 200px
 
 input
   &.small

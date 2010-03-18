@@ -6,6 +6,7 @@ require 'sass'
 require 'simplews'
 require 'base64'
 require 'yaml'
+require 'paginator'
 require 'soap/wsdlDriver'
 
 RESULTS_DIR = File.join(File.dirname(File.expand_path(__FILE__)), 'public', 'results')
@@ -42,7 +43,7 @@ get '/' do
 end
 
 post '/' do
-  name  = params[:name].gsub(/\s+/,"_") unless params[:name].nil?
+  name  = params[:name] unless params[:name].nil?
 
   (gefile = params[:GE][:tempfile]) unless params[:GE].nil?
   (mefile = params[:ME][:tempfile]) unless params[:ME].nil?
@@ -53,11 +54,17 @@ post '/' do
   data_id = $driver.upload(gefile.read, mefile.read, genesfile.read, mirnasfile.read, samplesfile.read)
   
   putatives = Array.new
+  %w(microrna mirbase mirecords tarbase hoctar).each{|p|
+    if params[p] == "1"
+     putatives << p
+    end
+   }
+   %w(DIANAmicroT  I_mirandaXL_pictar4way_targetscans  I_pictar4way_targetscans  Union  microrna  mirbase  pictar4way  pictar5way  targetscans).each{|p|
+     if params["mirgen_#{p}"] == "1"
+       putatives << "mirgen/#{p}"
+     end
+   }
 
-  puts params[:putative]
-
-  putatives << params[:putative]
-  
   if name.nil? || name.empty?
     filename = params[:GE][:filename]
     name = File.basename(filename).sub(/\.[^\.]*$/,'')
@@ -65,13 +72,18 @@ post '/' do
     name = name.gsub(/\s+/,"_")
   end
 
-  job = case params[:algorithm]
-    when "TaLasso" then $driver.lasso(data_id, putatives, name)
-    when "Correlation" then $driver.correlation(data_id, putatives, name)
-    when "GenMir" then $driver.gen_mir(data_id, putatives, name)
-    when "SimpleGenMir" then $driver.simple_gen_mir(data_id, putatives, name)
-  end
+  puts data_id
+  putatives.each{|p|
+	puts p
+   }
 
+
+  job = case params[:algorithm]
+    when "TaLasso" then $driver.lasso(data_id,putatives,name)
+    when "Correlation" then $driver.correlation(data_id,putatives,name)
+    when "GenMir" then $driver.gen_mir(data_id,putatives,name)
+    when "SimpleGenMir" then $driver.simple_gen_mir(data_id,putatives,name)
+  end
 
   # Change this information to match you actual web serice
   redirect "/" + job
@@ -106,8 +118,15 @@ get '/:job' do
 
     @info = $driver.info(@job)
     @title += " [Done]"
+    
+	#def marshal_cache(name, key = [])
+
     targets = MatrixFormat::matrix2list( File.join(RESULTS_DIR,"#{@job}_targets.txt"), File.join(RESULTS_DIR,"#{@job}_gene.txt"), File.join(RESULTS_DIR,"#{@job}_mirna.txt"))
-    @sorted_targets = targets.collect{|gen,info| info.collect{|mirna,score| {:gen => gen, :mirna => mirna, :score => score.to_f}}}.flatten.sort_by{|p| p[:score]}.reverse
+    sorted_targets = targets.collect{|gen,info| info.collect{|mirna,score| {:gen => gen, :mirna => mirna, :score => score.to_f}}}.flatten.sort_by{|p| p[:score]}.reverse
+    @pager = Paginator.new(sorted_targets.size, 50) do |offset, per_page|
+    	sorted_targets[offset, per_page]
+    end
+    @page = @pager.page(params[:page])
     haml :results
   end
 

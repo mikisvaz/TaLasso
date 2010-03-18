@@ -8,11 +8,21 @@
     %a{:href => "/results/#{@job}_gene.txt"} Genes 
   %li
     %a{:href => "/results/#{@job}_mirna.txt"} MiRNAs
+%center
+  %a.first{:href => "/#{@job}"} First
+  - if @page.prev?
+    %a.separated{:href => "/#{@job}?page=#{@page.prev.number}"} <<
+  [
+  = @page.number
+  ]
+  - if @page.next?
+    %a.separated{:href => "/#{@job}?page=#{@page.next.number}"} >>
+  %a.last{:href => "/#{@job}?page=#{@page.last.number}"} Last
 %table
   %th Gene
   %th miRNA
   %th Score
-  - @sorted_targets.each do |p|
+  - @page.each do |p|
     %tr
       %td
         %a{:href => "#{@job}/g/#{p[:gen]}"}=p[:gen]
