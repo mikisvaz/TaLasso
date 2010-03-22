@@ -78,12 +78,6 @@ post '/' do
     name = name.gsub(/\s+/,"_")
   end
 
-  puts data_id
-  putatives.each{|p|
-    puts p
-  }
-
-
   job = case params[:algorithm]
     when "TaLasso" then $driver.lasso(data_id,putatives,name)
     when "Correlation" then $driver.correlation(data_id,putatives,name)
@@ -136,10 +130,12 @@ get '/:job' do
         targets.collect{|gen,info| info.collect{|mirna,score| {:gen => gen, :mirna => mirna, :score => score.to_f}}}.flatten.sort_by{|p| p[:score]}.reverse
       end
 
-      @pager = Paginator.new(sorted_targets.size, 50) do |offset, per_page|
-        sorted_targets[offset, per_page]
-      end
-      @page = @pager.page(page)
+  #    @page = marshal_cache('page', [@job]) do      
+       pager = Paginator.new(sorted_targets.size, 50) do |offset, per_page|
+         sorted_targets[offset, per_page]
+       end
+       @page = pager.page(page)
+   #   end
 
       haml :results
     end
@@ -152,23 +148,31 @@ get '/:job/m/:mirna' do
   @title = @job
   @mirna = params[:mirna]
 
+  cache('mirna', [@job, @mirna]) do
+	
   sorted_targets = marshal_cache('sorted_targets', [@job]) do
-    targets = MatrixFormat::matrix2list( File.join(RESULTS_DIR,"#{@job}_targets.txt"), File.join(RESULTS_DIR,"#{@job}_gene.txt"), File.join(RESULTS_DIR,"#{@job}_mirna.txt"))
-    targets.collect{|gen,info| info.collect{|mirna,score| {:gen => gen, :mirna => mirna, :score => score.to_f}}}.flatten.sort_by{|p| p[:score]}.reverse
+     targets = MatrixFormat::matrix2list( File.join(RESULTS_DIR,"#{@job}_targets.txt"), File.join(RESULTS_DIR,"#{@job}_gene.txt"), File.join(RESULTS_DIR,"#{@job}_mirna.txt"))
+     targets.collect{|gen,info| info.collect{|mirna,score| {:gen => gen, :mirna => mirna, :score => score.to_f}}}.flatten.sort_by{|p| p[:score]}.reverse
   end
-
   @mirna_targets = sorted_targets.select{|p| p[:mirna] == @mirna}
 
-  haml :mirna_results
+    haml :mirna_results
+  end
 end
 
 get '/:job/g/:gen' do
   @job   = params[:job]
   @title = @job
   @gen = params[:gen]
-  targets = MatrixFormat::matrix2list( File.join(RESULTS_DIR,"#{@job}_targets.txt"), File.join(RESULTS_DIR,"#{@job}_gene.txt"), File.join(RESULTS_DIR,"#{@job}_mirna.txt"))
-  sorted_targets = targets.collect{|gen,info| info.collect{|mirna,score| {:gen => gen, :mirna => mirna, :score => score.to_f}}}.flatten.sort_by{|p| p[:score]}.reverse
+
+  cache('gene', [@job, @gen]) do
+  
+     sorted_targets =  marshal_cache('sorted_targets', [@job]) do
+         targets = MatrixFormat::matrix2list( File.join(RESULTS_DIR,"#{@job}_targets.txt"), File.join(RESULTS_DIR,"#{@job}_gene.txt"), File.join(RESULTS_DIR,"#{@job}_mirna.txt"))
+         targets.collect{|gen,info| info.collect{|mirna,score| {:gen => gen, :mirna => mirna, :score => score.to_f}}}.flatten.sort_by{|p| p[:score]}.reverse
+     end
   @gene_targets = sorted_targets.select{|p| p[:gen] == @gen}
 
   haml :gene_results
+  end
 end

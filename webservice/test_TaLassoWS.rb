@@ -15,7 +15,7 @@ data_id = server.upload(
 ) 
 
 
-job = server.gen_mir(data_id,  %w(tarbase mirbase), '')
+job = server.gen_mir(data_id,  %w(tarbase), '')
 
 while ! server.done job
   puts "."
