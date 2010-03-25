@@ -119,6 +119,8 @@ get '/:job' do
       File.open(File.join(RESULTS_DIR,"#{@job}_targets.txt"), 'w') do |f| f.write Base64.decode64 $driver.result(@results[0]) end unless File.exists? File.join(RESULTS_DIR,"#{@job}_targets.txt")
       File.open(File.join(RESULTS_DIR,"#{@job}_gene.txt"), 'w') do |f| f.write Base64.decode64 $driver.result(@results[1]) end    unless File.exists? File.join(RESULTS_DIR,"#{@job}_gene.txt")
       File.open(File.join(RESULTS_DIR,"#{@job}_mirna.txt"), 'w') do |f| f.write Base64.decode64 $driver.result(@results[2]) end   unless File.exists? File.join(RESULTS_DIR,"#{@job}_mirna.txt")
+      File.open(File.join(RESULTS_DIR,"#{@job}_tarbase_pvalues.png"), 'w') do |f| f.write Base64.decode64 $driver.result(@results[3]) end   unless File.exists? File.join(RESULTS_DIR,"#{@job}_tarbase_pvalues.png")
+      File.open(File.join(RESULTS_DIR,"#{@job}_tarbase_hits.png"), 'w') do |f| f.write Base64.decode64 $driver.result(@results[4]) end   unless File.exists? File.join(RESULTS_DIR,"#{@job}_tarbase_hits.png")
 
       @info = $driver.info(@job)
       @title += " [Done]"

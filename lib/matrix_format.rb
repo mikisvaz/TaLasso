@@ -7,9 +7,9 @@ module MatrixFormat
     File.open(file_matrix).read.split("\n").each_with_index do |line, i|
       row_name = row_names[i]
       values = line.chomp.split(sep)
-      col_names.zip(values) do |p2|
-        col_name, value = p2
-        next if value.to_f == 0
+      col_names.each_with_index do |col_name, i|
+        value = values[i].to_f
+        next if value == 0
         list[row_name] ||= {}
         list[row_name][col_name] =  value
       end

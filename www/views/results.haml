@@ -8,6 +8,10 @@
     %a{:href => "/results/#{@job}_gene.txt"} Genes 
   %li
     %a{:href => "/results/#{@job}_mirna.txt"} MiRNAs
+  %li
+    %a{:href => "/results/#{@job}_tarbase_pvalues.png"} [tarbase] Hypergeometric p-values
+  %li
+    %a{:href => "/results/#{@job}_tarbase_hits.png"} [tarbase] Hits
 %center
   %a.first{:href => "/#{@job}"} First
   - if @page.prev?
