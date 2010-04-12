@@ -1,27 +1,30 @@
 %h1== Results for #{@job}
 %p
-  Download results files
-%ul
-  %li
-    %a{:href => "/results/#{@job}_targets.txt"} Targets
-  %li
-    %a{:href => "/results/#{@job}_gene.txt"} Genes 
-  %li
-    %a{:href => "/results/#{@job}_mirna.txt"} MiRNAs
-  %li
-    %a{:href => "/results/#{@job}_tarbase_pvalues.png"} [tarbase] Hypergeometric p-values
-  %li
-    %a{:href => "/results/#{@job}_tarbase_hits.png"} [tarbase] Hits
+  Download results files:
+  %a{:href => "/results/#{@job}_targets.txt"} [Targets]
+  %a{:href => "/results/#{@job}_gene.txt"} [Genes]
+  %a{:href => "/results/#{@job}_mirna.txt"} [MiRNAs]
 %center
-  %a.first{:href => "/#{@job}"} First
+  %p
+    %h3 Validation of results
+    %a{:href => "/results/#{@job}_tarbase_pvalues.png"}  
+      %img{:src => "/results/#{@job}_tarbase_pvalues.png", :height => "240px", :width => "320px"}
+    %h3 Hits distribution map
+    %img{:src => "/results/#{@job}_tarbase_hits.png"}
+%p
+%center
+  %a{:name => "table"}
+  %h3 Table of results
+%center
+  %a.first{:href => "/#{@job}#table"} First
   - if @page.prev?
-    %a.separated{:href => "/#{@job}?page=#{@page.prev.number}"} <<
+    %a.separated{:href => "/#{@job}?page=#{@page.prev.number}#table"} <<
   [
   = @page.number
   ]
   - if @page.next?
-    %a.separated{:href => "/#{@job}?page=#{@page.next.number}"} >>
-  %a.last{:href => "/#{@job}?page=#{@page.last.number}"} Last
+    %a.separated{:href => "/#{@job}?page=#{@page.next.number}#table"} >>
+  %a.last{:href => "/#{@job}?page=#{@page.last.number}#table"} Last
 %table
   %th Gene
   %th miRNA

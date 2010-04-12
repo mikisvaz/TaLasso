@@ -5,6 +5,7 @@ require 'matrix_format'
 require 'haml'
 require 'sass'
 require 'simplews'
+require 'simplews/notifier'
 require 'base64'
 require 'yaml'
 require 'paginator'
@@ -18,6 +19,8 @@ FileUtils.mkdir_p RESULTS_DIR unless File.exists? RESULTS_DIR
 
 WSDL_FILE = File.join(File.dirname(File.dirname(File.expand_path(__FILE__))), 'webservice', 'wsdl', 'TaLassoWS.wsdl')
 $driver = SOAP::WSDLDriverFactory.new(WSDL_FILE).create_rpc_driver
+MONITOR = SimpleWS::Jobs::Notifier.new('Talasso', "bisaurin.dacya.ucm.es:8382", WSDL_FILE, :smtp_host => "ucsmtp.ucm.es")
+MONITOR.start
 
 get '/favicon.ico' do
   ""
@@ -56,6 +59,7 @@ post '/' do
   (genesfile = params[:genes][:tempfile]) unless params[:genes].nil?
   (mirnasfile = params[:mirnas][:tempfile]) unless params[:mirnas].nil?
   (samplesfile = params[:samples][:tempfile]) unless params[:samples].nil?
+  email    = params[:email] || ""
 
   data_id = $driver.upload(gefile.read, mefile.read, genesfile.read, mirnasfile.read, samplesfile.read)
   
@@ -84,6 +88,8 @@ post '/' do
     when "GenMir" then $driver.gen_mir(data_id,putatives,name)
     when "SimpleGenMir" then $driver.simple_gen_mir(data_id,putatives,name)
   end
+
+  MONITOR.add_job(job, email) unless email.empty?
 
   # Change this information to match you actual web serice
   redirect "/" + job
@@ -132,12 +138,10 @@ get '/:job' do
         targets.collect{|gen,info| info.collect{|mirna,score| {:gen => gen, :mirna => mirna, :score => score.to_f}}}.flatten.sort_by{|p| p[:score]}.reverse
       end
 
-  #    @page = marshal_cache('page', [@job]) do      
        pager = Paginator.new(sorted_targets.size, 50) do |offset, per_page|
          sorted_targets[offset, per_page]
        end
        @page = pager.page(page)
-   #   end
 
       haml :results
     end

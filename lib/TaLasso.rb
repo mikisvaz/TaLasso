@@ -1,6 +1,7 @@
 require 'open4'
 module TaLasso
-  MATLAB='matlab -nojvm -nodesktop -nodisplay'
+
+	MATLAB='matlab -nojvm -nodesktop -nodisplay'
   MATLAB_LIB= File.join(File.dirname(File.dirname(File.expand_path(__FILE__))), 'Matlab')
   PUTATIVE_DIR = File.join(File.dirname(File.dirname(File.expand_path(__FILE__))), 'data', 'targets')
 

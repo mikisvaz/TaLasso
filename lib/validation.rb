@@ -4,10 +4,10 @@ require 'inline'
 require 'gruff'
 require 'MARQ/score'
 
-
 module TaLasso
   module TaLasso::Validation
-    class << self
+
+  class << self
       inline do |builder|
         builder.c_raw <<-EOC
   
