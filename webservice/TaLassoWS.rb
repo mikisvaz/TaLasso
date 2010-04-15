@@ -2,7 +2,7 @@ $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
 require 'TaLasso'
 require 'validation'
 
-GOLDSTANDARDS = %w(tarbase)
+GOLDSTANDARDS = %w(tarbase mirecords)
 
 helper :validate do |job_name, goldstandard|
   info[:hypergeometric] ||= {}
