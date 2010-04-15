@@ -43,6 +43,8 @@ task :lasso, %w(data_id putatives), {:putatives => :array},
    '{JOB}/mirna.txt',
    '{JOB}/tarbase_pvalues.png',
    '{JOB}/tarbase_hits.png',
+   '{JOB}/mirecords_pvalues.png',
+   '{JOB}/mirecords_hits.png',
 ] do |data_id, putatives|
   info[:type] = 'lasso'
 
@@ -62,6 +64,8 @@ task :correlation, %w(data_id putatives), {:putatives => :array},
    '{JOB}/mirna.txt',
    '{JOB}/tarbase_pvalues.png',
    '{JOB}/tarbase_hits.png',
+   '{JOB}/mirecords_pvalues.png',
+   '{JOB}/mirecords_hits.png',
 ] do |data_id, putatives|
   info[:type] = 'correlation'
 
@@ -81,6 +85,8 @@ task :gen_mir, %w(data_id putatives), {:putatives => :array},
    '{JOB}/mirna.txt',
    '{JOB}/tarbase_pvalues.png',
    '{JOB}/tarbase_hits.png',
+   '{JOB}/mirecords_pvalues.png',
+   '{JOB}/mirecords_hits.png',
 ] do |data_id, putatives|
   info[:type] = 'gen_mir'
 
@@ -101,6 +107,8 @@ task :simple_gen_mir, %w(data_id putatives), {:putatives => :array},
    '{JOB}/mirna.txt',
    '{JOB}/tarbase_pvalues.png',
    '{JOB}/tarbase_hits.png',
+   '{JOB}/mirecords_pvalues.png',
+   '{JOB}/mirecords_hits.png',
 ] do |data_id, putatives|
   info[:type] = 'simple_gen_mir'
 

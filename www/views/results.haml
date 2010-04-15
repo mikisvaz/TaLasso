@@ -6,11 +6,21 @@
   %a{:href => "/results/#{@job}_mirna.txt"} [MiRNAs]
 %center
   %p
-    %h3 Validation of results
-    %a{:href => "/results/#{@job}_tarbase_pvalues.png"}  
-      %img{:src => "/results/#{@job}_tarbase_pvalues.png", :height => "240px", :width => "320px"}
-    %h3 Hits distribution map
-    %img{:src => "/results/#{@job}_tarbase_hits.png"}
+    .resultimages
+      #rightimage
+        %h3 Validation of results (tarbase)
+        %a{:href => "/#{@job}/validation_tarbase"}  
+          %img{:src => "/results/#{@job}_tarbase_pvalues.png", :width => "350px"}
+        %h3 Hits distribution map (tarbase)
+        %a{:href => "/#{@job}/validation_tarbase"}
+          %img{:src => "/results/#{@job}_tarbase_hits.png", :width => "350px"}
+      #leftimage
+        %h3 Validation of results (mirecords) 
+        %a{:href => "/#{@job}/validation_mirecords"}
+          %img{:src => "/results/#{@job}_mirecords_pvalues.png", :width => "350px"}
+        %h3 Hits distribution map (mirecords)
+        %a{:href => "/#{@job}/validation_mirecords"}
+          %img{:src => "/results/#{@job}_mirecords_hits.png", :width => "350px"}
 %p
 %center
   %a{:name => "table"}

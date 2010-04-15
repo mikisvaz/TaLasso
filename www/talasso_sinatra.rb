@@ -120,13 +120,15 @@ get '/:job' do
     haml :wait
 
   else
-    cache('job', [@job, page]) do 
+#    cache('job', [@job, page]) do 
       @results = $driver.results(@job)
       File.open(File.join(RESULTS_DIR,"#{@job}_targets.txt"), 'w') do |f| f.write Base64.decode64 $driver.result(@results[0]) end unless File.exists? File.join(RESULTS_DIR,"#{@job}_targets.txt")
       File.open(File.join(RESULTS_DIR,"#{@job}_gene.txt"), 'w') do |f| f.write Base64.decode64 $driver.result(@results[1]) end    unless File.exists? File.join(RESULTS_DIR,"#{@job}_gene.txt")
       File.open(File.join(RESULTS_DIR,"#{@job}_mirna.txt"), 'w') do |f| f.write Base64.decode64 $driver.result(@results[2]) end   unless File.exists? File.join(RESULTS_DIR,"#{@job}_mirna.txt")
       File.open(File.join(RESULTS_DIR,"#{@job}_tarbase_pvalues.png"), 'w') do |f| f.write Base64.decode64 $driver.result(@results[3]) end   unless File.exists? File.join(RESULTS_DIR,"#{@job}_tarbase_pvalues.png")
       File.open(File.join(RESULTS_DIR,"#{@job}_tarbase_hits.png"), 'w') do |f| f.write Base64.decode64 $driver.result(@results[4]) end   unless File.exists? File.join(RESULTS_DIR,"#{@job}_tarbase_hits.png")
+	File.open(File.join(RESULTS_DIR,"#{@job}_mirecords_pvalues.png"), 'w') do |f| f.write Base64.decode64 $driver.result(@results[5]) end   unless File.exists? File.join(RESULTS_DIR,"#{@job}_mirecords_pvalues.png")
+      File.open(File.join(RESULTS_DIR,"#{@job}_mirecords_hits.png"), 'w') do |f| f.write Base64.decode64 $driver.result(@results[6]) end   unless File.exists? File.join(RESULTS_DIR,"#{@job}_mirecords_hits.png")
 
       @info = $driver.info(@job)
       @title += " [Done]"
@@ -145,7 +147,7 @@ get '/:job' do
 
       haml :results
     end
-  end
+ # end
 
 end
 
@@ -182,3 +184,16 @@ get '/:job/g/:gen' do
   haml :gene_results
   end
 end
+
+get '/:job/validation_mirecords' do
+  @job = params[:job]
+  haml :mirecords
+end
+
+get '/:job/validation_tarbase' do
+  @job = params[:job]
+  haml :tarbase
+end
+
+
+
