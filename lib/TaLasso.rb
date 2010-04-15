@@ -74,7 +74,12 @@ module TaLasso
     script  = matlab_add_paths(['miLasso', 'miLasso/l1_ls_matlab'])
     script += matlab_prepare_data(data_dir, putative)
     script +=<<-EOF
-      solucion = l1_reg_model(GE, ME, GM, #{ lamb });
+       % solucion = l1_reg_model(GE, ME, GM, #{ lamb });
+       solucion = sparse([],[],[],size(GE,1),size( ME , 1 ), 10*size(GE,1));
+
+       tic, for t = 1 : size(GE,1)
+          [ solucion(t,:) ] = l1_reg_model( GE( t , : ) , ME , GM( t , : ) , 1/5 );
+       end, toc
     EOF
     script += matlab_save(output_dir)
 

@@ -1,4 +1,4 @@
-function [x,status,history] = l1_ls_nonneg(A,varargin)
+function [x,status] = l1_ls_nonneg(A,y,lambda)
 %
 % l1-Regularized Least Squares Problem Solver
 %
@@ -70,55 +70,33 @@ ALPHA           = 0.01;     % minimum fraction of decrease in the objective
 BETA            = 0.5;      % stepsize decrease factor
 MAX_LS_ITER     = 100;      % maximum backtracking line search iteration
 
-% VARIABLE ARGUMENT HANDLING
-% if the second argument is a matrix or an operator, the calling sequence is
-%   l1_ls(A,At,y,lambda,m,n [,tar_gap,[,quiet]]))
-% if the second argument is a vector, the calling sequence is
-%   l1_ls(A,y,lambda [,tar_gap[,quiet]])
-if ( (isobject(varargin{1}) || ~isvector(varargin{1})) && nargin >= 6)
-    At = varargin{1};
-    m  = varargin{2};
-    n  = varargin{3};
-    y  = varargin{4};
-    lambda = varargin{5};
-    varargin = varargin(6:end);
-    
-elseif (nargin >= 3)
-    At = A';
-    [m,n] = size(A);
-    y  = varargin{1};
-    lambda = varargin{2};
-    varargin = varargin(3:end);
-else
-    %if (~quiet) disp('Insufficient input arguments'); end
-    x = []; status = 'Failed'; history = [];
-    return;
-end
+At = A';
+[m,n] = size(A);
 
 % VARIABLE ARGUMENT HANDLING
-t0         = min(max(1,1/lambda),n/1e-3);
-defaults   = {1e-3,false,1e-3,5000,ones(n,1),t0};
-given_args = ~cellfun('isempty',varargin);
-defaults(given_args) = varargin(given_args);
-[reltol,quiet,eta,pcgmaxi,x,t] = deal(defaults{:});
+if lambda == 0
+    t0 = min(max(1,1000),n/1e-3);
+else
+    t0         = min(max(1,1/lambda),n/1e-3);
+end
+reltol     = 1e-3;
+eta        = 1e-3;
+pcgmaxi    = 5000;
+x          = ones(n,1);
+t          = t0;
+%defaults   = {1e-3,false,1e-3,5000,ones(n,1),t0};
+% given_args = ~cellfun('isempty',varargin);
+% defaults(given_args) = varargin(given_args);
+%[reltol,quiet,eta,pcgmaxi,x,t] = deal(defaults{:});
 
 f = -x;
 
 % RESULT/HISTORY VARIABLES
-pobjs = [] ; dobjs = [] ; sts = [] ; pitrs = []; pflgs = [];
-pobj  = Inf; dobj  =-Inf; s   = Inf; pitr  = 0 ; pflg  = 0 ;
+dobj  =-Inf; s   = Inf; pitr  = 0 ; pflg  = 0 ;
 
-ntiter  = 0; lsiter  = 0; zntiter = 0; zlsiter = 0;
-normg   = 0; prelres = 0; dx =  zeros(n,1);
+ntiter  = 0; lsiter  = 0; dx =  zeros(n,1);
 
-% diagxtx = diag(At*A);
 diagxtx = 2*ones(n,1);
-
-% if (~quiet) disp(sprintf('\nSolving a problem of size (m=%d, n=%d), with lambda=%.5e',...
-%             m,n,lambda)); end
-% if (~quiet) disp('-----------------------------------------------------------------------------');end
-% if (~quiet) disp(sprintf('%5s %9s %15s %15s %13s %11s',...
-%             'iter','gap','primobj','dualobj','step len','pcg iters')); end
 
 %------------------------------------------------------------
 %               MAIN LOOP
@@ -142,22 +120,15 @@ for ntiter = 0:MAX_NT_ITER
     dobj  =  max(-0.25*nu'*nu-nu'*y,dobj);
     gap   =  pobj - dobj;
 
-    pobjs = [pobjs pobj]; dobjs = [dobjs dobj]; sts = [sts s];
-    pflgs = [pflgs pflg]; pitrs = [pitrs pitr];
-
     %------------------------------------------------------------
     %   STOPPING CRITERION
     %------------------------------------------------------------
-    %if (~quiet) disp(sprintf('%4d %12.2e %15.5e %15.5e %11.1e %8d',...
-     %   ntiter, gap, pobj, dobj, s, pitr)); end
 
-    if (gap/abs(dobj) < reltol) 
+    if (gap < reltol*abs(dobj)) 
         status  = 'Solved';
-        history = [pobjs-dobjs; pobjs; dobjs; sts; pitrs; pflgs];
-        %if (~quiet) disp('Absolute tolerance reached.'); end
-        %disp(sprintf('total pcg iters = %d\n',sum(pitrs)));
         return;
     end
+    
     %------------------------------------------------------------
     %       UPDATE t
     %------------------------------------------------------------
@@ -172,7 +143,7 @@ for ntiter = 0:MAX_NT_ITER
     d1 = (1/t)./(x.^2);
 
     % calculate gradient
-    gradphi = [At*(z*2)+lambda-(1/t)./x];
+    gradphi = At*(z*2)+lambda-(1/t)./x;
     
     % calculate vectors to be used in the preconditioner
     prb     = diagxtx+d1;
@@ -181,16 +152,19 @@ for ntiter = 0:MAX_NT_ITER
     normg   = norm(gradphi);
     pcgtol  = min(1e-1,eta*gap/min(1,normg));
     
-    if (ntiter ~= 0 && pitr == 0) pcgtol = pcgtol*0.1; end
+    if (ntiter ~= 0 && pitr == 0) 
+        pcgtol = pcgtol*0.1; 
+    end
 
-if 1
-    [dx,pflg,prelres,pitr,presvec] = ...
-        pcg(@AXfunc_l1_ls,-gradphi,pcgtol,pcgmaxi,@Mfunc_l1_ls,...
-            [],dx,A,At,d1,1./prb);
-end
-    %dx = (2*A'*A+diag(d1))\(-gradphi);
+    if 1
+        [dx,pflg,prelres,pitr] = ...
+            pcg(@AXfunc_l1_ls,-gradphi,pcgtol,pcgmaxi,@Mfunc_l1_ls,...
+                [],dx,A,At,d1,1./prb);
+    end
 
-    if (pflg == 1) pitr = pcgmaxi; end
+    if (pflg == 1) 
+        pitr = pcgmaxi;
+    end
     
     %------------------------------------------------------------
     %   BACKTRACKING LINE SEARCH
@@ -210,7 +184,9 @@ end
         end
         s = BETA*s;
     end
-    if (lsiter == MAX_LS_ITER) break; end % exit by BLS
+    if (lsiter == MAX_LS_ITER) 
+        break
+    end % exit by BLS
         
     x = newx; f = newf;
 end
@@ -228,20 +204,19 @@ elseif (ntiter == MAX_NT_ITER)
     %if (~quiet) disp('MAX_NT_ITER exceeded.'); end
     status = 'Failed';
 end
-history = [pobjs-dobjs; pobjs; dobjs; sts; pitrs; pflgs];
 
 return;
 
-%------------------------------------------------------------
-%       COMPUTE AX (PCG)
-%------------------------------------------------------------
-function [y] = AXfunc_l1_ls(x,A,At,d1,p1)
-
-y = (At*((A*x)*2))+d1.*x;
-
-%------------------------------------------------------------
-%       COMPUTE P^{-1}X (PCG)
-%------------------------------------------------------------
-function [y] = Mfunc_l1_ls(x,A,At,d1,p1)
-
-y = p1.*x;
+% %------------------------------------------------------------
+% %       COMPUTE AX (PCG)
+% %------------------------------------------------------------
+% function [y] = AXfunc_l1_ls(x,A,At,d1,p1)
+% 
+% y = (At*((A*x)*2))+d1.*x;
+% 
+% %------------------------------------------------------------
+% %       COMPUTE P^{-1}X (PCG)
+% %------------------------------------------------------------
+% function [y] = Mfunc_l1_ls(x,A,At,d1,p1)
+% 
+% y = p1.*x;
