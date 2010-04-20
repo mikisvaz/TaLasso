@@ -22,6 +22,13 @@ $driver = SOAP::WSDLDriverFactory.new(WSDL_FILE).create_rpc_driver
 MONITOR = SimpleWS::Jobs::Notifier.new('Talasso', "bisaurin.dacya.ucm.es:8382", WSDL_FILE, :smtp_host => "ucsmtp.ucm.es")
 MONITOR.start
 
+NAMES = {}
+File.open(File.join(File.dirname(File.dirname(File.expand_path(__FILE__))), 'data', 'gene_info', 'names')).read.each_line do |line|
+  code, value = line.chomp.split(/\t/)
+  next if value.nil? || value.empty?
+  NAMES[code] = value
+end
+
 get '/favicon.ico' do
   ""
 end
@@ -127,7 +134,7 @@ get '/:job' do
       File.open(File.join(RESULTS_DIR,"#{@job}_mirna.txt"), 'w') do |f| f.write Base64.decode64 $driver.result(@results[2]) end   unless File.exists? File.join(RESULTS_DIR,"#{@job}_mirna.txt")
       File.open(File.join(RESULTS_DIR,"#{@job}_tarbase_pvalues.png"), 'w') do |f| f.write Base64.decode64 $driver.result(@results[3]) end   unless File.exists? File.join(RESULTS_DIR,"#{@job}_tarbase_pvalues.png")
       File.open(File.join(RESULTS_DIR,"#{@job}_tarbase_hits.png"), 'w') do |f| f.write Base64.decode64 $driver.result(@results[4]) end   unless File.exists? File.join(RESULTS_DIR,"#{@job}_tarbase_hits.png")
-	File.open(File.join(RESULTS_DIR,"#{@job}_mirecords_pvalues.png"), 'w') do |f| f.write Base64.decode64 $driver.result(@results[5]) end   unless File.exists? File.join(RESULTS_DIR,"#{@job}_mirecords_pvalues.png")
+      File.open(File.join(RESULTS_DIR,"#{@job}_mirecords_pvalues.png"), 'w') do |f| f.write Base64.decode64 $driver.result(@results[5]) end   unless File.exists? File.join(RESULTS_DIR,"#{@job}_mirecords_pvalues.png")
       File.open(File.join(RESULTS_DIR,"#{@job}_mirecords_hits.png"), 'w') do |f| f.write Base64.decode64 $driver.result(@results[6]) end   unless File.exists? File.join(RESULTS_DIR,"#{@job}_mirecords_hits.png")
 
       @info = $driver.info(@job)

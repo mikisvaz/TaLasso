@@ -42,7 +42,11 @@
   - @page.each do |p|
     %tr
       %td
-        %a{:href => "#{@job}/g/#{p[:gen]}"}=p[:gen]
+        %a{:href => "#{@job}/g/#{p[:gen]}"} [+]
+        %a{:href => "http://www.ensembl.org/Homo_sapiens/Gene/Summary?g=#{p[:gen]}"}=p[:gen] 
+        == #{NAMES[p[:gen]]}
+
       %td
-        %a{:href => "#{@job}/m/#{p[:mirna]}"}=p[:mirna]
+        %a{:href => "#{@job}/m/#{p[:mirna]}"} [+]
+        p[:mirna]
       %td=p[:score]

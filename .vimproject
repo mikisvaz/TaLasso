@@ -1,4 +1,4 @@
-TaLasso=/$PWD filter="*.m *.rb *.txt *.rdoc LICENSE ToDo" {
+TaLasso=/$PWD filter="*.m *.rb *.txt *.rdoc LICENSE ToDo Rakefile" {
  README.rdoc
  LICENSE
  ToDo
@@ -40,6 +40,11 @@ TaLasso=/$PWD filter="*.m *.rb *.txt *.rdoc LICENSE ToDo" {
  test=test {
   helper.rb
   test_TaLasso.rb
+ }
+ data=data{
+  gene_info=gene_info{
+   Rakefile
+   }
  }
  www=www{
   talasso_sinatra.rb

@@ -1,0 +1,34 @@
+require 'rbbt/sources/organism'
+
+file 'genes' do |t|
+  `cat \`find ../targets -name "gene.txt"\`|sort|uniq > #{t.name}`
+end
+
+file 'lexicon' => 'genes' do |t|
+  index = Organism.id_index('Hsa', :other => ['Ensembl Gene ID'])
+  lexicon = Organism.lexicon('Hsa')
+
+  genes = File.open('genes').read.split(/\s+/)
+
+  File.open(t.name, 'w') do |file|
+    genes.each do |gene|
+      native = index[gene]
+      next if lexicon[native].nil?
+      file.puts "#{ gene }\t#{ lexicon[native]  * ' '}"
+    end
+  end
+end
+
+file 'names' => 'genes' do |t|
+  index = Organism.id_index('Hsa', :other => ['Ensembl Gene ID'], :native => 'Associated Gene Name')
+  genes = File.open('genes').read.split(/\s+/)
+
+  File.open(t.name, 'w') do |file|
+    genes.each do |gene|
+      native = index[gene]
+      file.puts "#{ gene }\t#{ native }"
+    end
+  end
+end
+
+task 'default' => 'names'

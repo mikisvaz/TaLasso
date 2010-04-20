@@ -2,6 +2,10 @@
 
 Description goes here.
 
+== Installation
+
+Go to directory 'data/gene_info' and run 'rake'
+
 == Note on Patches/Pull Requests
  
 * Fork the project.
