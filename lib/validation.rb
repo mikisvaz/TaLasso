@@ -89,6 +89,10 @@ module TaLasso
       end
     end
 
+    # Takes a list of pvalues and a total size (used to determine the plot size
+    # before hand) and draws a lines plot with all the pairs pvalue-size. Sizes
+    # are the sizes of top predictions selected, pvalue is the hypergeometric
+    # value for that list of predictions agains a given reference)
     def self.draw_pvalues(pvalues, size, filename)
       require 'gnuplot'
       sizes, values = pvalues.collect.sort_by{|p| p[0]}.transpose.values_at(0, 1)
@@ -112,6 +116,9 @@ module TaLasso
       end
     end
 
+    # Given two files results and gold standard (db), sort results by score,
+    # and determine the positions gold standard pairs appearing in the results.
+    # This is used to calculate hypergeometric cuts at different values
     def self.positions(results_path, db_path)
       list = MatrixFormat.matrix2list(File.join(results_path, 'targets.txt'), File.join(results_path, 'gene.txt'), File.join(results_path, 'mirna.txt'))
       gs   = MatrixFormat.matrix2list(File.join(db_path, 'putative.txt'), File.join(db_path, 'gene.txt'), File.join(db_path, 'mirna.txt'))
@@ -133,12 +140,15 @@ module TaLasso
       {:results => result_pairs.length, :positions => positions}
     end
 
+    # Scale positions to be in the 0-size range. Results is the total number of
+    # results
     def self.scale(positions, results, size = 10000.0)
       ratio = results.to_f / size
 
       positions.collect{|pos| (pos / ratio).to_i }
     end
 
+    # Compute and draw hypergeometric pvalues at different cutoffs
     def self.validate(positions, results, filename = nil, steps = 1000)
       sizes = (1..steps).collect{|i| (i * results / steps).to_i }
       goldstandard = positions.length
@@ -153,6 +163,8 @@ module TaLasso
       pvalues
     end
 
+    # Draw a hit bar for the positions. results is the total number of posible
+    # positions
     def self.hit_score(positions, results, filename = nil)
       max         = 10000
 
